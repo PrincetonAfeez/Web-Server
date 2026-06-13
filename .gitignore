@@ -11,6 +11,12 @@ dist/
 .coverage
 htmlcov/
 
+# Local implementation (not published to GitHub)
+demo/
+docs/
+src/
+tests/
+
 # Capstone planning drafts (local scope documents)
 web_server_capstone_plan.txt
 web_server_capstone_revised_scope.txt
