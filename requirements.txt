@@ -1,0 +1,10 @@
+# Runtime install for pyserve.
+# The server itself uses only the Python standard library (>=3.11).
+#
+# From the repository root:
+#   pip install -r requirements.txt
+#
+# Reproducible locked install (dev/demo toolchain pins):
+#   pip install -r requirements-dev.txt -c constraints.txt
+
+-e .
