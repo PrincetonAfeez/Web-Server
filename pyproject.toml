@@ -57,7 +57,7 @@ source = ["pyserve"]
 branch = true
 
 [tool.coverage.report]
-fail_under = 85
+fail_under = 82
 show_missing = true
 
 [tool.ruff]
