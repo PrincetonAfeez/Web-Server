@@ -8,3 +8,11 @@ venv/
 build/
 dist/
 *.egg-info/
+
+# Capstone planning drafts (local scope documents)
+web_server_capstone_plan.txt
+web_server_capstone_revised_scope.txt
+web_server_capstone_scope_improved.txt
+docs/planning/web_server_capstone_plan.txt
+docs/planning/web_server_capstone_revised_scope.txt
+docs/planning/web_server_capstone_scope_improved.txt
