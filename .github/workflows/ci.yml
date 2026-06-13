@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package with dev and demo extras (locked toolchain)
+        run: python -m pip install -e ".[dev,demo]" -c constraints.txt
+      - name: Lint (ruff)
+        run: ruff check src tests
+      - name: Type-check (mypy)
+        run: mypy src
+      - name: Test with coverage (pytest)
+        run: python -m pytest --cov=pyserve --cov-report=term-missing
