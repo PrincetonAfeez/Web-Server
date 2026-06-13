@@ -1,0 +1,11 @@
+# Optional Django demo under demo/django_demo.
+#
+# From the repository root:
+#   pip install -r requirements-demo.txt
+#
+# Reproducible locked install (matches CI):
+#   pip install -r requirements-demo.txt -c constraints.txt
+
+-r requirements.txt
+
+django>=4.2
