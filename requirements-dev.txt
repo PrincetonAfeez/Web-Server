@@ -1,0 +1,14 @@
+# Development toolchain: tests, lint, and type-checking.
+#
+# From the repository root:
+#   pip install -r requirements-dev.txt
+#
+# Reproducible locked install (matches CI):
+#   pip install -r requirements-dev.txt -c constraints.txt
+
+-r requirements.txt
+
+pytest>=7
+pytest-cov>=4
+ruff>=0.5
+mypy>=1.8
