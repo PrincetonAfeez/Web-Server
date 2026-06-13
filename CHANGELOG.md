@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-12
+
+### Fixed
+
+- Reject empty `Host` headers with `400 Bad Request`.
+- Treat HTTP version tokens case-insensitively and normalize to `HTTP/1.1`.
+- Require `Content-Length` on `POST` requests.
+- Return `417 Expectation Failed` for unsupported `Expect` values.
+- Create the async WSGI executor before accepting connections.
+- Build the async listener via `create_listening_socket` for bind parity.
+
+### Changed
+
+- Portfolio metadata points at the `Web-Server` repository.
+- ADRs 0001–0005 and the protocol checklist align with async listener behavior.
+- Demo script matches README install instructions and documents `error_app`.
+
+### Added
+
+- `docs/adr/README.md` ADR index.
+- Unit tests for `dispatch.py` and expanded parser/integration coverage (408 on
+  first read, 413/414/417, pipelining, keep-alive limits, IPv6 threaded/async,
+  `wsgiref.validate` on all models, parametrized 405).
+
 ## [0.2.0] - 2026-06-12
 
 ### Fixed

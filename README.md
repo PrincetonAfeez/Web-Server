@@ -74,7 +74,7 @@ server.join()
 | `--read-timeout` | `10.0` | Seconds to wait while reading a request. |
 | `--write-timeout` | `10.0` | Seconds to wait while sending a response. |
 | `--keep-alive-timeout` | `5.0` | Idle seconds before a kept-alive connection is closed. |
-| `--max-requests-per-connection` | `100` | Requests served per connection before closing. Must be at least 1. |
+| `--max-requests-per-connection` | `100` | Requests served per connection before closing. Maps to `ServerConfig.max_keep_alive_requests`. Must be at least 1. |
 | `--benchmark-friendly` | off | Sets `--keep-alive-timeout 0`, disabling keep-alive so each connection serves one request. Useful for throughput benchmarks. |
 | `--access-log` | off | Emit one access-log line per handled request, including parser and protocol errors. |
 | `--debug-errors` | off | Return the traceback in `500` response bodies (never use in production). |
@@ -184,13 +184,10 @@ documented tradeoffs, not accidental omissions.
 Unsupported HTTP versions (for example `HTTP/1.0`) receive `505 HTTP Version Not
 Supported` rather than being silently upgraded. See `docs/adr/0007-http-version-policy.md`.
 
-HTTP/1.1 `POST` requests without a `Content-Length` header are parsed as having
-no body; extra bytes can remain in the connection buffer on keep-alive. See
-`docs/adr/0005-parser-limits.md`.
+HTTP/1.1 `POST` requests without a `Content-Length` header receive `400 Bad
+Request`. See `docs/adr/0005-parser-limits.md`.
 
 ## Portfolio Metadata
 
-Before submitting or publishing, personalize:
-
-- `pyproject.toml` → `authors` and `[project.urls]`
-- `LICENSE` → copyright holder name
+Author and repository metadata are set in `pyproject.toml` and `LICENSE`. Update
+them if you fork this project for your own portfolio submission.
