@@ -8,6 +8,8 @@ venv/
 build/
 dist/
 *.egg-info/
+.coverage
+htmlcov/
 
 # Capstone planning drafts (local scope documents)
 web_server_capstone_plan.txt

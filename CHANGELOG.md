@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Async model now returns `400` (not `500`) for truncated requests, matching serial/threaded behavior.
+- `--verbose` now enables `DEBUG`-level application logging in the CLI.
+- Async response writes honor `write_timeout` via bounded `drain()` calls.
+- Error access logs include parsed `raw_target` and `http_version` when known.
+- Idle keep-alive timeouts now return `408` and are access-logged, matching
+  first-request read timeouts.
+- Async model returns `400` (not `500`) for truncated requests, matching
+  serial/threaded behavior.
 - `WSGIServer` can be stopped and restarted on the same instance after `join()`.
 - CLI rejects `--max-requests-per-connection` values below 1.
 - CLI startup banner prints the bound address when `--port 0` is used.
@@ -18,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `serialize_response()` derives its default `Server` header from package version.
+- CI installs from `requirements-all.txt` (aligned with README install docs).
+- Removed unused `transport/limits.py` module.
+- CLI rejects non-positive `--max-header-size` and `--max-body-size`.
+- `WSGIServer` rejects unknown `model` values at construction time.
 - Default `Server` header is derived from package version (`pyserve/0.1.0`).
 - Unsupported HTTP versions return `505 HTTP Version Not Supported`.
 - `WSGIServer` rejects mixing `config=` with `host`/`port`/`model`/`threads`.
@@ -25,6 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- ADR 0007 documenting the `505` HTTP version policy.
+- Integration tests for threaded protocol errors, keep-alive `408`, IPv6,
+  and `wsgiref.validate` through a socket round-trip.
+- Unit tests for `start_response(exc_info=...)`, IPv6 `Host` parsing, and CLI
+  size-limit validation.
+- `.coverage` and `htmlcov/` in `.gitignore`.
+- README install table, portfolio metadata section, and requirements-first docs.
 - `py.typed` marker for type checkers.
 - CLI flags for `--backlog`, `--max-request-line-size`, `--max-header-count`,
   `--read-timeout`, and `--write-timeout`.
@@ -32,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   concurrency, error access logs, and Django socket round-trip.
 - Windows CI job and pytest coverage reporting (82% threshold).
 - `project.urls` metadata in `pyproject.toml`.
+- Requirements files (`requirements.txt`, `requirements-dev.txt`,
+  `requirements-demo.txt`, `requirements-all.txt`).
 
 ## [0.1.0] - 2026-06-11
 

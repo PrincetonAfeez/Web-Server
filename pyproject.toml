@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "pyserve capstone" }]
+authors = [{ name = "Your Name" }]
 keywords = ["http", "wsgi", "server", "educational", "sockets"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -30,10 +30,11 @@ demo = ["django>=4.2"]
 [project.scripts]
 pyserve = "pyserve.cli.main:main"
 
+# Replace with your repository before publishing (see README “Portfolio metadata”).
 [project.urls]
-Homepage = "https://github.com/pyserve-capstone/pyserve"
-Repository = "https://github.com/pyserve-capstone/pyserve"
-Documentation = "https://github.com/pyserve-capstone/pyserve#readme"
+Homepage = "https://github.com/YOUR_USERNAME/pyserve"
+Repository = "https://github.com/YOUR_USERNAME/pyserve"
+Documentation = "https://github.com/YOUR_USERNAME/pyserve#readme"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

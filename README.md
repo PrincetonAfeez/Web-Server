@@ -78,7 +78,7 @@ server.join()
 | `--benchmark-friendly` | off | Sets `--keep-alive-timeout 0`, disabling keep-alive so each connection serves one request. Useful for throughput benchmarks. |
 | `--access-log` | off | Emit one access-log line per handled request, including parser and protocol errors. |
 | `--debug-errors` | off | Return the traceback in `500` response bodies (never use in production). |
-| `--verbose` / `--log-level` | off / `INFO` | Application logging verbosity (`logging` module). Does not enable access logs; use `--access-log` for those. |
+| `--verbose` / `--log-level` | off / `INFO` | `--verbose` forces `DEBUG` logging; otherwise `--log-level` controls verbosity. Does not enable access logs; use `--access-log` for those. |
 | `--version` | — | Print `pyserve <version>` and exit. |
 
 ### Exit Codes
@@ -129,10 +129,41 @@ iteration. Active connections may still run until they finish or hit a
 keep-alive/read timeout. When using `start_in_thread()`, call `join()` after
 `stop()` so callers wait for the server thread to finish.
 
-## Tests
+Idle keep-alive timeouts return `408 Request Timeout` (with an access-log line
+when `--access-log` is enabled), matching first-request read timeouts.
+
+## Install
+
+Runtime only (stdlib dependencies; installs pyserve from this repo):
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+Full contributor setup (tests, lint, type-check, Django demo):
+
+```powershell
+python -m pip install -r requirements-all.txt -c constraints.txt
+```
+
+Equivalent pyproject extra:
 
 ```powershell
 python -m pip install -e ".[dev,demo]" -c constraints.txt
+```
+
+| File | Purpose |
+| --- | --- |
+| `requirements.txt` | Editable install of pyserve |
+| `requirements-dev.txt` | Test/lint/type-check toolchain |
+| `requirements-demo.txt` | Django demo dependency |
+| `requirements-all.txt` | Dev + demo (what CI uses) |
+| `constraints.txt` | Pinned versions for reproducible installs |
+
+## Tests
+
+```powershell
+python -m pip install -r requirements-all.txt -c constraints.txt
 python -m pytest
 python -m pytest --cov=pyserve --cov-report=term-missing
 ```
@@ -151,4 +182,11 @@ production worker management, or production security hardening. Those are
 documented tradeoffs, not accidental omissions.
 
 Unsupported HTTP versions (for example `HTTP/1.0`) receive `505 HTTP Version Not
-Supported` rather than being silently upgraded.
+Supported` rather than being silently upgraded. See `docs/adr/0007-http-version-policy.md`.
+
+## Portfolio Metadata
+
+Before submitting or publishing, personalize:
+
+- `pyproject.toml` → `authors` and `[project.urls]`
+- `LICENSE` → copyright holder name
