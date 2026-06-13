@@ -1,6 +1,7 @@
-# Known-good toolchain lock for the [dev,demo] extras (pyserve itself is stdlib-only).
+# Known-good toolchain lock for requirements-dev.txt / requirements-demo.txt / requirements-all.txt.
+# pyserve itself is stdlib-only; use requirements.txt for a runtime-only editable install.
 # Used by CI and for reproducible local setups:
-#   pip install -e ".[dev,demo]" -c constraints.txt
+#   pip install -r requirements-all.txt -c constraints.txt
 pytest==9.0.3
 pytest-cov==7.0.0
 ruff==0.15.16
