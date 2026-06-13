@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyserve"
+dynamic = ["version"]
+description = "Educational HTTP/1.1 WSGI server built from raw sockets."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "pyserve capstone" }]
+keywords = ["http", "wsgi", "server", "educational", "sockets"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Server",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.5", "mypy>=1.8"]
+demo = ["django>=4.2"]
+
+[project.scripts]
+pyserve = "pyserve.cli.main:main"
+
+[project.urls]
+Homepage = "https://github.com/pyserve-capstone/pyserve"
+Repository = "https://github.com/pyserve-capstone/pyserve"
+Documentation = "https://github.com/pyserve-capstone/pyserve#readme"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.dynamic]
+version = { attr = "pyserve.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pyserve = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["pyserve"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_redundant_casts = true
+warn_unused_ignores = true
