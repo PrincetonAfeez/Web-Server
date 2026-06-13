@@ -1,0 +1,8 @@
+# Known-good toolchain lock for the [dev,demo] extras (pyserve itself is stdlib-only).
+# Used by CI and for reproducible local setups:
+#   pip install -e ".[dev,demo]" -c constraints.txt
+pytest==9.0.3
+pytest-cov==7.0.0
+ruff==0.15.16
+mypy==2.1.0
+django==5.2.14
