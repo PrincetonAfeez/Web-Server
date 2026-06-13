@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--read-timeout`, and `--write-timeout`.
 - Integration tests for server restart, async truncated requests, threaded
   concurrency, error access logs, and Django socket round-trip.
-- Windows CI job and pytest coverage reporting (85% threshold).
+- Windows CI job and pytest coverage reporting (82% threshold).
 - `project.urls` metadata in `pyproject.toml`.
 
 ## [0.1.0] - 2026-06-11
