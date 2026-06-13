@@ -7,51 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-12
+
 ### Fixed
 
-- `--verbose` now enables `DEBUG`-level application logging in the CLI.
+- Success-path write timeouts now return `408` instead of silently closing the
+  connection (serial/threaded and async).
+- `--verbose` enables `DEBUG` logging through `configure_application_logging()`.
 - Async response writes honor `write_timeout` via bounded `drain()` calls.
 - Error access logs include parsed `raw_target` and `http_version` when known.
-- Idle keep-alive timeouts now return `408` and are access-logged, matching
-  first-request read timeouts.
-- Async model returns `400` (not `500`) for truncated requests, matching
-  serial/threaded behavior.
-- `WSGIServer` can be stopped and restarted on the same instance after `join()`.
-- CLI rejects `--max-requests-per-connection` values below 1.
+- Idle keep-alive timeouts return `408` and are access-logged.
+- Async model returns `400` (not `500`) for truncated requests.
+- `WSGIServer` can be stopped and restarted after `join()`.
 - CLI startup banner prints the bound address when `--port 0` is used.
-- Access logs now include parser and protocol error responses.
-- `--verbose` no longer implicitly enables access logging.
+- Access logs include parser and protocol error responses.
 
 ### Changed
 
 - `serialize_response()` derives its default `Server` header from package version.
-- CI installs from `requirements-all.txt` (aligned with README install docs).
-- Removed unused `transport/limits.py` module.
-- CLI rejects non-positive `--max-header-size` and `--max-body-size`.
+- CI installs from `requirements-all.txt`; README Quick Start matches.
+- Removed unused `transport/limits.py`.
+- CLI rejects invalid size limits, negative ports, and negative keep-alive timeouts.
 - `WSGIServer` rejects unknown `model` values at construction time.
-- Default `Server` header is derived from package version (`pyserve/0.1.0`).
 - Unsupported HTTP versions return `505 HTTP Version Not Supported`.
 - `WSGIServer` rejects mixing `config=` with `host`/`port`/`model`/`threads`.
-- Capstone planning documents moved under `docs/planning/`.
+- ADR 0003 documents keep-alive `408` behavior; ADR 0005 documents bodyless POST.
 
 ### Added
 
-- ADR 0007 documenting the `505` HTTP version policy.
-- Integration tests for threaded protocol errors, keep-alive `408`, IPv6,
-  and `wsgiref.validate` through a socket round-trip.
-- Unit tests for `start_response(exc_info=...)`, IPv6 `Host` parsing, and CLI
-  size-limit validation.
-- `.coverage` and `htmlcov/` in `.gitignore`.
-- README install table, portfolio metadata section, and requirements-first docs.
-- `py.typed` marker for type checkers.
-- CLI flags for `--backlog`, `--max-request-line-size`, `--max-header-count`,
-  `--read-timeout`, and `--write-timeout`.
-- Integration tests for server restart, async truncated requests, threaded
-  concurrency, error access logs, and Django socket round-trip.
-- Windows CI job and pytest coverage reporting (82% threshold).
-- `project.urls` metadata in `pyproject.toml`.
-- Requirements files (`requirements.txt`, `requirements-dev.txt`,
-  `requirements-demo.txt`, `requirements-all.txt`).
+- `configure_application_logging()` for CLI and library embedders.
+- ADR 0007 for HTTP version policy.
+- Requirements files and portfolio metadata guidance.
+- `py.typed`, expanded CLI flags, Windows CI, and coverage reporting.
+- Integration tests for restart, concurrency, IPv6, Django, `wsgiref.validate`
+  round-trips, async/threaded protocol errors, keep-alive `408`, write timeouts,
+  and `--debug-errors`.
 
 ## [0.1.0] - 2026-06-11
 

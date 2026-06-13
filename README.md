@@ -19,7 +19,7 @@ socket accept
 Run the demo app from the repository root:
 
 ```powershell
-python -m pip install -e .
+python -m pip install -r requirements.txt
 pyserve --app demo.trivial_app:application --host 127.0.0.1 --port 8000 --model serial
 ```
 
@@ -78,7 +78,7 @@ server.join()
 | `--benchmark-friendly` | off | Sets `--keep-alive-timeout 0`, disabling keep-alive so each connection serves one request. Useful for throughput benchmarks. |
 | `--access-log` | off | Emit one access-log line per handled request, including parser and protocol errors. |
 | `--debug-errors` | off | Return the traceback in `500` response bodies (never use in production). |
-| `--verbose` / `--log-level` | off / `INFO` | `--verbose` forces `DEBUG` logging; otherwise `--log-level` controls verbosity. Does not enable access logs; use `--access-log` for those. |
+| `--verbose` / `--log-level` | off / `INFO` | `--verbose` forces `DEBUG` logging via `configure_application_logging()`; otherwise `--log-level` controls verbosity. Does not enable access logs; use `--access-log` for those. |
 | `--version` | — | Print `pyserve <version>` and exit. |
 
 ### Exit Codes
@@ -183,6 +183,10 @@ documented tradeoffs, not accidental omissions.
 
 Unsupported HTTP versions (for example `HTTP/1.0`) receive `505 HTTP Version Not
 Supported` rather than being silently upgraded. See `docs/adr/0007-http-version-policy.md`.
+
+HTTP/1.1 `POST` requests without a `Content-Length` header are parsed as having
+no body; extra bytes can remain in the connection buffer on keep-alive. See
+`docs/adr/0005-parser-limits.md`.
 
 ## Portfolio Metadata
 
