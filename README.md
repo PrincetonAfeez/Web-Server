@@ -71,10 +71,7 @@ server.run()
 - Bounded keep-alive, access logging, in-process stats
 - CLI and importable `WSGIServer` API
 
-Full implementation, tests, ADRs, and demo materials live in the local
-`src/`, `tests/`, `demo/`, and `docs/` directories (not published to GitHub).
-
-## Documentation map (local)
+## Documentation map
 
 | Path | Purpose |
 | --- | --- |
@@ -118,6 +115,4 @@ hardening are intentional non-goals. See `docs/production-reflection.md`.
 
 ## Releases
 
-Current version: **v0.2.1**. See `CHANGELOG.md` and local `RELEASE_v0.2.1.md`
-for release notes. Tags are created locally; nothing is pushed to GitHub unless
-you choose to.
+Current version: **v0.2.1**. See `CHANGELOG.md` and `RELEASE_v0.2.1.md`.
