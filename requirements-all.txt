@@ -1,0 +1,10 @@
+# Full contributor setup: pyserve + dev toolchain + Django demo.
+#
+# From the repository root:
+#   pip install -r requirements-all.txt
+#
+# Reproducible locked install (matches CI):
+#   pip install -r requirements-all.txt -c constraints.txt
+
+-r requirements-dev.txt
+-r requirements-demo.txt
