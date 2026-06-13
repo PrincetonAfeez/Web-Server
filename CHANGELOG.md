@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (local submission packaging)
+
+- Benchmark harness (`demo/benchmark.py`) and `docs/benchmark-results.md`
+- TOML config (`serve.toml`, `--config`), CLF access logs, static files with `304`
+- JSON stats endpoint (`--stats-path`) and Django+HTMX dashboard
+- Flask demo app, capstone report, defense Q&A, demo rehearsal, submission checklist
+- Normalized ADR 0003 and ADR 0006; polished README landing page
+
 ## [0.2.1] - 2026-06-12
 
 ### Fixed

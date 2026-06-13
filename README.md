@@ -1,41 +1,49 @@
 # pyserve
 
-`pyserve` is an educational HTTP/1.1 WSGI server built from raw TCP sockets.
-It is not trying to replace nginx, gunicorn, uWSGI, uvicorn, or Apache. The
-point is to show every layer between a TCP connection and a Python WSGI app.
+**Defense sentence:** This project implements everything between the TCP socket
+and Django’s view function, by hand, in Python.
 
-```text
-socket accept
--> recv bytes from TCP
--> parse HTTP/1.1
--> build WSGI environ
--> call the WSGI app
--> serialize HTTP response
--> send bytes back to the socket
-```
+`pyserve` is an educational HTTP/1.1 WSGI server built from raw sockets — not a
+replacement for nginx, gunicorn, uWSGI, uvicorn, or Apache.
 
-## Quick Start
-
-Run the demo app from the repository root:
+## Clone and run in 3 commands
 
 ```powershell
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-all.txt -c constraints.txt
 pyserve --app demo.trivial_app:application --host 127.0.0.1 --port 8000 --model serial
-```
-
-On Windows, if the generated `pyserve.exe` directory is not on `PATH`, use:
-
-```powershell
-python -m pyserve --app demo.trivial_app:application --host 127.0.0.1 --port 8000 --model serial
-```
-
-Then send a request:
-
-```powershell
 curl -i http://127.0.0.1:8000/
 ```
 
-The package also exposes a library API:
+On Windows, if `pyserve` is not on `PATH`, use `python -m pyserve` instead of
+`pyserve`.
+
+## Architecture
+
+```mermaid
+flowchart TB
+  subgraph transport [Transport layer]
+    L[listen / accept]
+    R[recv byte stream]
+    S[send byte stream]
+  end
+  subgraph http [HTTP layer]
+    P[request parser]
+    H[response serializer]
+  end
+  subgraph wsgi [WSGI layer]
+    E[environ builder]
+    A[start_response + iterable]
+  end
+  APP[WSGI app e.g. Django]
+
+  L --> R --> P --> E --> A --> APP
+  APP --> H --> S
+```
+
+Concurrency models (`serial`, `threaded`, `async`) share one dispatch policy and
+swap only the transport implementation. See local `docs/adr/` for tradeoffs.
+
+## Quick start (library)
 
 ```python
 from pyserve import WSGIServer
@@ -45,149 +53,71 @@ server = WSGIServer(application, host="127.0.0.1", port=8000, model="threaded")
 server.run()
 ```
 
-For background use in tests or embedding:
+## Configuration
 
-```python
-thread = server.start_in_thread()
-# ... exercise server at server.host / server.port ...
-server.stop()
-server.join()
-```
+- **CLI flags** — see table below.
+- **TOML file** — copy `serve.toml`, then run `pyserve --config serve.toml --app ...`.
+- **Optional middleware** (via CLI or TOML):
+  - `--stats-path /_pyserve/stats` — JSON stats for HTMX dashboards
+  - `--static demo/public` — serve static files with `304` support
+  - `--access-log-clf` — Common Log Format access lines
 
-`WSGIServer` can be stopped and started again on the same instance after
-`stop()` and `join()` complete. Pass either `config=ServerConfig(...)` or
-`host`/`port`/`model`/`threads` keyword arguments, not both.
+## What is implemented
 
-## CLI Options
+- Raw TCP listener (`socket`, `bind`, `listen`, `accept`)
+- HTTP/1.1 parser and serializer with enforced limits
+- PEP 3333 WSGI adapter (`wsgiref.validate`, Django proof)
+- Serial, threaded, and asyncio models
+- Bounded keep-alive, access logging, in-process stats
+- CLI and importable `WSGIServer` API
+
+Full implementation, tests, ADRs, and demo materials live in the local
+`src/`, `tests/`, `demo/`, and `docs/` directories (not published to GitHub).
+
+## Documentation map (local)
+
+| Path | Purpose |
+| --- | --- |
+| `docs/capstone-report.md` | Final written report |
+| `docs/defense-questions.md` | 17 oral-defense prompts with answers |
+| `docs/demo-rehearsal.md` | Live demo checklist |
+| `docs/demo-script.md` | Step-by-step demo commands |
+| `docs/benchmark-results.md` | Concurrency benchmark numbers |
+| `docs/adr/README.md` | Architecture decision records |
+| `docs/production-reflection.md` | Production non-goals |
+| `docs/submission-checklist.md` | Course submission packaging |
+
+## CLI options (summary)
 
 | Option | Default | Meaning |
 | --- | --- | --- |
-| `--app` | (required) | WSGI app as `import.path:callable`. |
-| `--host` / `--port` | `127.0.0.1` / `8000` | Bind address. Use `--port 0` for an ephemeral port; the startup banner prints the bound port. |
-| `--model` | `serial` | Concurrency model: `serial`, `threaded`, or `async`. |
-| `--workers` / `--threads` | `8` | Thread-pool size for the threaded model and for the async model's WSGI executor. Must be at least 1. |
-| `--backlog` | `128` | Listen backlog passed to `listen()`. |
-| `--max-request-line-size` | `8192` | Maximum request-line bytes (else `414`). |
-| `--max-header-size` | `65536` | Maximum total request-header bytes (else `431`). |
-| `--max-header-count` | `100` | Maximum number of request header lines (else `431`). |
-| `--max-body-size` | `1048576` | Maximum request-body bytes (else `413`). |
-| `--read-timeout` | `10.0` | Seconds to wait while reading a request. |
-| `--write-timeout` | `10.0` | Seconds to wait while sending a response. |
-| `--keep-alive-timeout` | `5.0` | Idle seconds before a kept-alive connection is closed. |
-| `--max-requests-per-connection` | `100` | Requests served per connection before closing. Maps to `ServerConfig.max_keep_alive_requests`. Must be at least 1. |
-| `--benchmark-friendly` | off | Sets `--keep-alive-timeout 0`, disabling keep-alive so each connection serves one request. Useful for throughput benchmarks. |
-| `--access-log` | off | Emit one access-log line per handled request, including parser and protocol errors. |
-| `--debug-errors` | off | Return the traceback in `500` response bodies (never use in production). |
-| `--verbose` / `--log-level` | off / `INFO` | `--verbose` forces `DEBUG` logging via `configure_application_logging()`; otherwise `--log-level` controls verbosity. Does not enable access logs; use `--access-log` for those. |
-| `--version` | — | Print `pyserve <version>` and exit. |
+| `--app` | (required) | WSGI app as `import.path:callable` |
+| `--config` | — | Optional TOML config (`serve.toml`) |
+| `--host` / `--port` | `127.0.0.1` / `8000` | Bind address |
+| `--model` | `serial` | `serial`, `threaded`, or `async` |
+| `--workers` | `8` | Thread pool / async WSGI executor size |
+| `--access-log` | off | Per-request access log lines |
+| `--access-log-clf` | off | Common Log Format |
+| `--stats-path` | — | JSON stats endpoint |
+| `--static` | — | Static file root directory |
+| `--benchmark-friendly` | off | Disable keep-alive for benchmarks |
 
-### Exit Codes
-
-| Code | Meaning |
-| --- | --- |
-| `0` | Clean exit, including Ctrl-C shutdown. |
-| `2` | Command-line usage error (argparse convention). |
-| `3` | The WSGI app named by `--app` could not be imported or is not callable. |
-
-## What Is Implemented
-
-- Raw TCP listener using `socket()`, `bind()`, `listen()`, and `accept()`.
-- Manual read loop because TCP is a byte stream, not an HTTP message stream.
-- Manual send loop to handle partial `send()` writes.
-- HTTP/1.1 request parser for GET, HEAD, and POST.
-- Case-insensitive headers with duplicate-header preservation.
-- Content-Length request bodies.
-- Parser limits for request line, headers, header count, and body size.
-- HTTP response serializer with Date, Server, Content-Length, and Connection.
-- HEAD, 204, and 304 no-body rules.
-- WSGI environ builder with PEP 3333-style variables.
-- `start_response`, WSGI write callable, byte chunk validation, and iterable `close()`.
-- Serial, threaded, and asyncio transport models sharing one dispatch policy.
-- Basic bounded keep-alive.
-- `Expect: 100-continue` interim responses before reading a request body.
-- Access logging and in-process server stats (request count, status histogram,
-  active connections, average request time) wired across all three models.
-- CLI and importable `WSGIServer` API (stats exposed as `server.stats`).
-- Optional Django proof under `demo/django_demo`.
-
-## Concurrency Models
-
-Serial mode handles one client connection at a time. It is the simplest baseline
-and the easiest place to explain the protocol path.
-
-Threaded mode uses a thread pool and handles multiple connections concurrently.
-This is a natural fit for synchronous WSGI applications.
-
-Asyncio mode uses `asyncio.start_server` for the socket transport, then runs the
-synchronous WSGI app in an executor. WSGI itself remains synchronous; this is
-not an ASGI implementation.
-
-## Shutdown
-
-Calling `stop()` sets an internal flag so the accept loop exits on the next
-iteration. Active connections may still run until they finish or hit a
-keep-alive/read timeout. When using `start_in_thread()`, call `join()` after
-`stop()` so callers wait for the server thread to finish.
-
-Idle keep-alive timeouts return `408 Request Timeout` (with an access-log line
-when `--access-log` is enabled), matching first-request read timeouts.
+See local source `src/pyserve/cli/main.py` for the full list.
 
 ## Install
-
-Runtime only (stdlib dependencies; installs pyserve from this repo):
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-Full contributor setup (tests, lint, type-check, Django demo):
-
-```powershell
-python -m pip install -r requirements-all.txt -c constraints.txt
-```
-
-Equivalent pyproject extra:
-
-```powershell
-python -m pip install -e ".[dev,demo]" -c constraints.txt
-```
-
-| File | Purpose |
-| --- | --- |
-| `requirements.txt` | Editable install of pyserve |
-| `requirements-dev.txt` | Test/lint/type-check toolchain |
-| `requirements-demo.txt` | Django demo dependency |
-| `requirements-all.txt` | Dev + demo (what CI uses) |
-| `constraints.txt` | Pinned versions for reproducible installs |
-
-## Tests
 
 ```powershell
 python -m pip install -r requirements-all.txt -c constraints.txt
 python -m pytest
-python -m pytest --cov=pyserve --cov-report=term-missing
 ```
 
-`constraints.txt` pins the exact test/lint/type-check toolchain that CI uses;
-`pyserve` itself has no runtime dependencies beyond the standard library.
+## Scope boundary
 
-The tests cover parser limits, partial reads, response serialization,
-`wsgiref.validate`, socket round-trips, keep-alive, and the concurrency models.
+TLS, HTTP/2+, WebSockets, reverse proxying, chunked transfer, and production
+hardening are intentional non-goals. See `docs/production-reflection.md`.
 
-## Scope Boundary
+## Releases
 
-The server intentionally does not implement TLS termination, HTTP/2, HTTP/3,
-WebSockets, reverse proxy behavior, gzip/br compression, chunked transfer,
-production worker management, or production security hardening. Those are
-documented tradeoffs, not accidental omissions.
-
-Unsupported HTTP versions (for example `HTTP/1.0`) receive `505 HTTP Version Not
-Supported` rather than being silently upgraded. See `docs/adr/0007-http-version-policy.md`.
-
-HTTP/1.1 `POST` requests without a `Content-Length` header receive `400 Bad
-Request`. See `docs/adr/0005-parser-limits.md`.
-
-## Portfolio Metadata
-
-Author and repository metadata are set in `pyproject.toml` and `LICENSE`. Update
-them if you fork this project for your own portfolio submission.
+Current version: **v0.2.1**. See `CHANGELOG.md` and local `RELEASE_v0.2.1.md`
+for release notes. Tags are created locally; nothing is pushed to GitHub unless
+you choose to.

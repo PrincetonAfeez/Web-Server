@@ -9,3 +9,4 @@
 -r requirements.txt
 
 django>=4.2
+flask>=3

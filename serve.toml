@@ -1,0 +1,28 @@
+# Example pyserve configuration (stdlib tomllib).
+# CLI flags override values from this file.
+
+host = "127.0.0.1"
+port = 8000
+model = "serial"
+threads = 8
+backlog = 128
+log_level = "INFO"
+access_log = false
+access_log_clf = false
+benchmark_friendly = false
+debug_errors = false
+keep_alive_timeout = 5.0
+max_requests_per_connection = 100
+read_timeout = 10.0
+write_timeout = 10.0
+max_request_line_size = 8192
+max_header_size = 65536
+max_header_count = 100
+max_body_size = 1048576
+
+# Optional: expose JSON stats for HTMX dashboards
+# stats_path = "/_pyserve/stats"
+
+# Optional: serve files from a directory (GET /static/... only)
+# static_root = "demo/public"
+# static_url_prefix = "/static"
