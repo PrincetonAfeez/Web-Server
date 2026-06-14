@@ -1,0 +1,1 @@
+"""Optional Django proof app."""

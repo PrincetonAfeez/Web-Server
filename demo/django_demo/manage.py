@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+""" Django management command for the Django demo """
+
 from __future__ import annotations
 
 import os

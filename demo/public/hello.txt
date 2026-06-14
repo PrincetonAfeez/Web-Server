@@ -1,0 +1,3 @@
+# Static demo file for --static serving and 304 tests.
+
+pyserve static file demo.

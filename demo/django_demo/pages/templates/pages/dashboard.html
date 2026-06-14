@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>pyserve live stats</title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  </head>
+  <body>
+    <h1>pyserve + Django + HTMX</h1>
+    <p>
+      This page polls <code>/_pyserve/stats</code> through HTMX. Start Django with
+      <code>--stats-path /_pyserve/stats</code>.
+    </p>
+    <pre
+      id="stats"
+      hx-get="/_pyserve/stats"
+      hx-trigger="load, every 2s"
+      hx-swap="innerHTML"
+    >Loading stats...</pre>
+  </body>
+</html>
