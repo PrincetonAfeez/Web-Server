@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PrincetonAfeez/Web-Server/Schema/stats_response.schema.json",
+  "title": "pyserve Stats Endpoint Response",
+  "description": "JSON response returned by the optional stats endpoint when stats_path is configured.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_count",
+    "active_connections",
+    "status_codes",
+    "average_request_time"
+  ],
+  "properties": {
+    "request_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "active_connections": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status_codes": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[1-5][0-9][0-9]$"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "average_request_time": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "examples": [
+    {
+      "request_count": 12,
+      "active_connections": 1,
+      "status_codes": {
+        "200": 10,
+        "404": 2
+      },
+      "average_request_time": 0.0032
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PrincetonAfeez/Web-Server/Schema/cli_args.schema.json",
+  "title": "pyserve CLI Arguments",
+  "description": "Normalized JSON representation of pyserve command-line options.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "app"
+  ],
+  "properties": {
+    "config": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Path to optional TOML config file."
+    },
+    "app": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*:[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"
+    },
+    "host": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "port": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "model": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "serial",
+        "threaded",
+        "async",
+        null
+      ]
+    },
+    "workers": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "backlog": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "verbose": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "log_level": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_request_line_size": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "max_header_size": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "max_header_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "max_body_size": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "read_timeout": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0
+    },
+    "write_timeout": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0
+    },
+    "keep_alive_timeout": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "max_requests_per_connection": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "access_log": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "access_log_clf": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "benchmark_friendly": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "debug_errors": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "static": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "CLI spelling for static_root."
+    },
+    "static_url_prefix": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^/.*$"
+    },
+    "stats_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^/.*$"
+    }
+  },
+  "examples": [
+    {
+      "app": "demo.trivial_app:application",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "model": "threaded",
+      "workers": 8,
+      "stats_path": "/_pyserve/stats"
+    }
+  ]
+}

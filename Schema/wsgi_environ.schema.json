@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PrincetonAfeez/Web-Server/Schema/wsgi_environ.schema.json",
+  "title": "WSGI Environ Mapping",
+  "description": "Core PEP 3333 WSGI environ keys expected when pyserve dispatches a request into a WSGI application.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "REQUEST_METHOD",
+    "SCRIPT_NAME",
+    "PATH_INFO",
+    "QUERY_STRING",
+    "SERVER_NAME",
+    "SERVER_PORT",
+    "SERVER_PROTOCOL",
+    "wsgi.version",
+    "wsgi.url_scheme",
+    "wsgi.input",
+    "wsgi.errors",
+    "wsgi.multithread",
+    "wsgi.multiprocess",
+    "wsgi.run_once"
+  ],
+  "properties": {
+    "REQUEST_METHOD": {
+      "type": "string",
+      "pattern": "^[A-Z!#$%&'*+.^_`|~-]+$"
+    },
+    "SCRIPT_NAME": {
+      "type": "string"
+    },
+    "PATH_INFO": {
+      "type": "string",
+      "pattern": "^/.*$"
+    },
+    "QUERY_STRING": {
+      "type": "string"
+    },
+    "CONTENT_TYPE": {
+      "type": "string"
+    },
+    "CONTENT_LENGTH": {
+      "type": "string",
+      "pattern": "^[0-9]*$"
+    },
+    "SERVER_NAME": {
+      "type": "string",
+      "minLength": 1
+    },
+    "SERVER_PORT": {
+      "type": "string",
+      "pattern": "^[0-9]{1,5}$"
+    },
+    "SERVER_PROTOCOL": {
+      "type": "string",
+      "enum": [
+        "HTTP/1.0",
+        "HTTP/1.1"
+      ]
+    },
+    "REMOTE_ADDR": {
+      "type": "string"
+    },
+    "wsgi.version": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "integer",
+          "const": 1
+        },
+        {
+          "type": "integer",
+          "const": 0
+        }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "wsgi.url_scheme": {
+      "type": "string",
+      "enum": [
+        "http",
+        "https"
+      ]
+    },
+    "wsgi.input": {
+      "description": "Input byte stream object. JSON Schema cannot validate Python stream behavior."
+    },
+    "wsgi.errors": {
+      "description": "Error stream object. JSON Schema cannot validate Python stream behavior."
+    },
+    "wsgi.multithread": {
+      "type": "boolean"
+    },
+    "wsgi.multiprocess": {
+      "type": "boolean"
+    },
+    "wsgi.run_once": {
+      "type": "boolean"
+    }
+  },
+  "patternProperties": {
+    "^HTTP_[A-Z0-9_]+$": {
+      "type": "string"
+    }
+  },
+  "examples": [
+    {
+      "REQUEST_METHOD": "GET",
+      "SCRIPT_NAME": "",
+      "PATH_INFO": "/",
+      "QUERY_STRING": "",
+      "SERVER_NAME": "127.0.0.1",
+      "SERVER_PORT": "8000",
+      "SERVER_PROTOCOL": "HTTP/1.1",
+      "wsgi.version": [
+        1,
+        0
+      ],
+      "wsgi.url_scheme": "http",
+      "wsgi.input": "<BytesIO>",
+      "wsgi.errors": "<stderr>",
+      "wsgi.multithread": false,
+      "wsgi.multiprocess": false,
+      "wsgi.run_once": false,
+      "HTTP_HOST": "127.0.0.1:8000"
+    }
+  ]
+}

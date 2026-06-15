@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PrincetonAfeez/Web-Server/Schema/schema_manifest.json",
+  "title": "pyserve Schema Manifest",
+  "description": "Index of Schema folder files for the Web-Server repository.",
+  "repository": "PrincetonAfeez/Web-Server",
+  "project": "pyserve",
+  "version": "0.2.1",
+  "schema_draft": "2020-12",
+  "schemas": [
+    {
+      "file": "server_config.schema.json",
+      "contract": "Server configuration / TOML mapping"
+    },
+    {
+      "file": "cli_args.schema.json",
+      "contract": "Normalized CLI invocation"
+    },
+    {
+      "file": "http_request.schema.json",
+      "contract": "Parsed HTTP request"
+    },
+    {
+      "file": "http_response.schema.json",
+      "contract": "Serialized HTTP response"
+    },
+    {
+      "file": "wsgi_environ.schema.json",
+      "contract": "WSGI environ mapping"
+    },
+    {
+      "file": "stats_response.schema.json",
+      "contract": "Stats endpoint JSON payload"
+    }
+  ]
+}

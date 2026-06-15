@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PrincetonAfeez/Web-Server/Schema/http_response.schema.json",
+  "title": "HTTP Serialized Response",
+  "description": "Contract for an HTTP response after a WSGI app or middleware has produced status, headers, and body bytes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status_code",
+    "reason_phrase",
+    "headers",
+    "body_size"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": [
+        "HTTP/1.1"
+      ]
+    },
+    "status_code": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 599
+    },
+    "reason_phrase": {
+      "type": "string",
+      "examples": [
+        "OK",
+        "Not Found",
+        "Internal Server Error"
+      ]
+    },
+    "headers": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[!#$%&'*+.^_`|~0-9A-Za-z-]+$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "body_size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "connection_close": {
+      "type": "boolean"
+    }
+  },
+  "examples": [
+    {
+      "version": "HTTP/1.1",
+      "status_code": 200,
+      "reason_phrase": "OK",
+      "headers": {
+        "Content-Type": "text/plain",
+        "Content-Length": "12"
+      },
+      "body_size": 12,
+      "connection_close": false
+    }
+  ]
+}

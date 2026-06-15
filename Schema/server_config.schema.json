@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PrincetonAfeez/Web-Server/Schema/server_config.schema.json",
+  "title": "pyserve Server Configuration",
+  "description": "JSON representation of pyserve configuration values accepted from TOML, CLI normalization, or ServerConfig-compatible mappings.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "WSGI application import path in module.path:callable format. Used by the CLI, ignored by ServerConfig mapping.",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*:[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$",
+      "examples": [
+        "demo.trivial_app:application"
+      ]
+    },
+    "host": {
+      "type": "string",
+      "minLength": 1,
+      "default": "127.0.0.1"
+    },
+    "port": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": 8000
+    },
+    "model": {
+      "type": "string",
+      "enum": [
+        "serial",
+        "threaded",
+        "async"
+      ],
+      "default": "serial"
+    },
+    "threads": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 8
+    },
+    "workers": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Alias accepted by configuration loading and mapped to threads."
+    },
+    "backlog": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 128
+    },
+    "verbose": {
+      "type": "boolean",
+      "default": false
+    },
+    "log_level": {
+      "type": "string",
+      "enum": [
+        "CRITICAL",
+        "ERROR",
+        "WARNING",
+        "INFO",
+        "DEBUG",
+        "NOTSET",
+        "critical",
+        "error",
+        "warning",
+        "info",
+        "debug",
+        "notset"
+      ],
+      "default": "INFO"
+    },
+    "access_log": {
+      "type": "boolean",
+      "default": false
+    },
+    "access_log_clf": {
+      "type": "boolean",
+      "default": false
+    },
+    "benchmark_friendly": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, normalized config sets keep_alive_timeout to 0.0."
+    },
+    "debug_errors": {
+      "type": "boolean",
+      "default": false
+    },
+    "max_request_line_size": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 8192
+    },
+    "max_header_size": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 65536
+    },
+    "max_header_count": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 100
+    },
+    "max_body_size": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 1048576
+    },
+    "read_timeout": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 10.0
+    },
+    "write_timeout": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 10.0
+    },
+    "keep_alive_timeout": {
+      "type": "number",
+      "minimum": 0,
+      "default": 5.0
+    },
+    "max_keep_alive_requests": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 100
+    },
+    "max_requests_per_connection": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "TOML/CLI-facing alias mapped to max_keep_alive_requests."
+    },
+    "read_chunk_size": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 4096
+    },
+    "server_header": {
+      "type": "string",
+      "minLength": 1,
+      "examples": [
+        "pyserve/0.2.1"
+      ]
+    },
+    "url_scheme": {
+      "type": "string",
+      "enum": [
+        "http",
+        "https"
+      ],
+      "default": "http"
+    },
+    "wsgi_multithread": {
+      "type": "boolean",
+      "default": false
+    },
+    "wsgi_multiprocess": {
+      "type": "boolean",
+      "default": false
+    },
+    "wsgi_run_once": {
+      "type": "boolean",
+      "default": false
+    },
+    "bound_host": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_port": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "stats_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^/.*$",
+      "examples": [
+        "/_pyserve/stats"
+      ]
+    },
+    "static_root": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "examples": [
+        "demo/public"
+      ]
+    },
+    "static_url_prefix": {
+      "type": "string",
+      "pattern": "^/.*$",
+      "default": "/static"
+    }
+  },
+  "allOf": [
+    {
+      "not": {
+        "required": [
+          "threads",
+          "workers"
+        ]
+      }
+    },
+    {
+      "not": {
+        "required": [
+          "max_keep_alive_requests",
+          "max_requests_per_connection"
+        ]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "app": "demo.trivial_app:application",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "model": "serial",
+      "threads": 8,
+      "backlog": 128,
+      "log_level": "INFO",
+      "access_log": false,
+      "access_log_clf": false,
+      "debug_errors": false,
+      "keep_alive_timeout": 5.0,
+      "max_requests_per_connection": 100,
+      "read_timeout": 10.0,
+      "write_timeout": 10.0,
+      "max_request_line_size": 8192,
+      "max_header_size": 65536,
+      "max_header_count": 100,
+      "max_body_size": 1048576,
+      "stats_path": "/_pyserve/stats",
+      "static_root": "demo/public",
+      "static_url_prefix": "/static"
+    }
+  ]
+}
