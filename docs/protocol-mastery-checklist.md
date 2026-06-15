@@ -1,0 +1,22 @@
+# Protocol Mastery Checklist
+
+- [x] Direct `socket()`, `bind()`, `listen()`, and `accept()` in serial/threaded modes.
+- [x] TCP is treated as a byte stream with explicit read loops.
+- [x] Request headers are read until `CRLF CRLF`.
+- [x] Partial reads are handled.
+- [x] Partial sends are handled with a manual `send()` loop.
+- [x] `SO_REUSEADDR` is enabled on the listening socket (`SO_EXCLUSIVEADDRUSE` on Windows, where `SO_REUSEADDR` would allow two listeners on one port). All three concurrency models use `create_listening_socket`; async passes that socket to `asyncio.start_server`.
+- [x] Request line, method, target, path, query string, version, and headers are parsed.
+- [x] Header lookup is case-insensitive.
+- [x] Content-Length request bodies are read.
+- [x] Parser limits are enforced.
+- [x] Response status line, headers, body, and Content-Length are serialized.
+- [x] Date and Server headers are added.
+- [x] HEAD, 204, and 304 no-body rules are applied.
+- [x] `Expect: 100-continue` is answered before the body is read.
+- [x] Content-Length and port parsing reject non-ASCII numerics (no `isdigit`/`int` crash).
+- [x] WSGI environ includes required variables.
+- [x] `wsgi.input` is file-like.
+- [x] `start_response`, write callable, iterable bytes, and iterable `close()` are supported.
+- [x] Serial, threaded, and asyncio models are implemented.
+- [x] CLI and library APIs are available.
