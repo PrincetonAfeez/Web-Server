@@ -79,6 +79,8 @@ server.run()
 | `docs/defense-questions.md` | 17 oral-defense prompts with answers |
 | `docs/demo-rehearsal.md` | Live demo checklist |
 | `docs/demo-script.md` | Step-by-step demo commands |
+| `docs/deployment.md` | How to run outside a one-off local demo |
+| `docs/cli-reference.md` | Complete CLI flag and exit-code reference |
 | `docs/benchmark-results.md` | Concurrency benchmark numbers |
 | `docs/adr/README.md` | Architecture decision records |
 | `docs/production-reflection.md` | Production non-goals |
@@ -99,7 +101,31 @@ server.run()
 | `--static` | — | Static file root directory |
 | `--benchmark-friendly` | off | Disable keep-alive for benchmarks |
 
-See local source `src/pyserve/cli/main.py` for the full list.
+See `docs/cli-reference.md` for the complete CLI contract.
+
+## Exit codes
+
+| Code | Meaning |
+| ---: | --- |
+| 0 | Server exited normally |
+| 2 | CLI usage error reported by argparse |
+| 3 | WSGI application failed to load |
+
+Example:
+
+```powershell
+pyserve --app missing.module:application
+echo $LASTEXITCODE
+# 3
+```
+
+On Unix shells, use `echo $?` instead of `$LASTEXITCODE`.
+
+Notes:
+
+- argparse returns 2 for invalid command-line usage before pyserve starts.
+- pyserve returns 3 when the `--app` import path cannot be loaded.
+- Runtime protocol errors are returned as HTTP responses, not process exit codes.
 
 ## Install
 
